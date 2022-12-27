@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -40,5 +39,5 @@ class StateSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
-}
+    }
 }

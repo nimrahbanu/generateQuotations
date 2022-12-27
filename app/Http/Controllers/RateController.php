@@ -15,11 +15,15 @@ class RateController extends Controller
      */
     public function index()
     {
-        $measurement = Measurement::where('deleted_date', NULL)->get();
-        $work_name = WorkName::where('deleted_date', NULL)->get();
-        $rate = Rate::where('deleted_date', NULL)->get();
-        return view('pages.Rate.rate')->with('rate', $rate)->with('measurement', $measurement)->with('work_name', $work_name);
-   
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_rate', $user_permissions ) ){
+             $measurement = Measurement::where('deleted_date', NULL)->get();
+            $work_name = WorkName::where('deleted_date', NULL)->get();
+            $rate = Rate::where('deleted_date', NULL)->get();
+            return view('pages.Rate.rate')->with('rate', $rate)->with('measurement', $measurement)->with('work_name', $work_name);
+        // }else{
+        //     return redirect()->route('home');
+        // }
     }
 
     /**
@@ -75,12 +79,19 @@ class RateController extends Controller
      */
     public function edit($id)
     {
-        $work_name = WorkName::where('deleted_date', NULL)->get();
-        $rate = Rate::where('deleted_date', NULL)->get();
-        $measurement = Measurement::where('deleted_date', NULL)->get();
-        $rate = Rate::findOrFail($id);  
-        return view('pages.Rate.rate_edit')->with('rate', $rate)->with('measurement', $measurement)->with('work_name', $work_name);
-    }
+        
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_rate', $user_permissions ) ){
+            $work_name = WorkName::where('deleted_date', NULL)->get();
+            $rate = Rate::where('deleted_date', NULL)->get();
+            $measurement = Measurement::where('deleted_date', NULL)->get();
+            $rate = Rate::findOrFail($id);  
+            return view('pages.Rate.rate_edit')->with('rate', $rate)->with('measurement', $measurement)->with('work_name', $work_name);
+    
+        }else{
+            return redirect()->route('home');
+        }
+    }   
 
     /**
      * Update the specified resource in storage.
@@ -118,12 +129,17 @@ class RateController extends Controller
      */
     public function destroy($id)
     {
-        $status = Rate::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Data Format Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_rate', $user_permissions ) ){
+            $status = Rate::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Data Format Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Data Format Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Data Format Not Deleted !!');
+            return redirect()->route();
         }
-        return redirect()->back();
     }
 }

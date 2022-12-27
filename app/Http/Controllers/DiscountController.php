@@ -14,9 +14,13 @@ class DiscountController extends Controller
      */
     public function index()
     {
-         $discounts = Discount::where('deleted_date',Null)->get();
-        return view('pages.discount.discount')->with('discounts',$discounts);
-        //
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_discount', $user_permissions ) ){
+            $discounts = Discount::where('deleted_date',Null)->get();
+            return view('pages.discount.discount')->with('discounts',$discounts);
+        // }else{
+        //     return redirect()->route('home');
+        // }    
     }
 
     /**
@@ -69,9 +73,15 @@ class DiscountController extends Controller
      */
     public function edit( $id)
     {
-        $discounts = Discount::where('deleted_date',NULL)->get();
-        $discounts = Discount::findOrFail($id);
-        return view('pages.discount.discount_edit')->with('discounts',$discounts);
+       
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_discount', $user_permissions ) ){
+            $discounts = Discount::where('deleted_date',NULL)->get();
+            $discounts = Discount::findOrFail($id);
+            return view('pages.discount.discount_edit')->with('discounts',$discounts);
+        }else{
+            return redirect()->route('home');
+        }    
     }
 
     /**
@@ -105,12 +115,17 @@ class DiscountController extends Controller
      */
     public function destroy($id)
     {
-        $status = Discount::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Discount % Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_discount', $user_permissions ) ){
+            $status = Discount::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Discount % Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Discount %  Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Discount %  Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
     }
 }

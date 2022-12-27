@@ -10,10 +10,10 @@
                 <div class="header-body text-center mb-7">
                     <div class="row justify-content-center">
                         <div class="col-lg-8 col-md-12 pt-5">
-                            <h1 class="@if(Auth::guest()) text-white @endif">{{ __('Welcome to Paper Dashboard Laravel Live Preview.') }}</h1>
+                            <h1 class="@if(Auth::guest()) text-white @endif">{{ __('Welcome to ABS Softech Private Limited.') }}</h1>
 
                             <p class="@if(Auth::guest()) text-white @endif text-lead mt-3 mb-0">
-                                {{ __('Log in and see how you can save more than 90 hours of work with CRUDs for managing: #users, #roles, #items, #categories, #tags and more.') }}
+                                {{ __('A growing software company headquartered in Indore has helped people and businesses realise their objectives cost-effectively. Its innovations in security systems, architectural products and web applications have set the standards for excellence for small firms and companies in these markets.') }}
                             </p>
                         </div>
                     </div>

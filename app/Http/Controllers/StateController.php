@@ -14,8 +14,13 @@ class StateController extends Controller
      */
     public function index()
     { 
-        $states = State::where('deleted_date', NULL)->get();
-        return view('pages.form.state')->with('states', $states);
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_state', $user_permissions ) ){
+            $states = State::where('deleted_date', NULL)->get();
+            return view('pages.state.state')->with('states', $states);
+        // }else{
+        //     return redirect()->route('home');
+        // }    
     }
 
     /**
@@ -68,10 +73,15 @@ class StateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        $states = State::where('deleted_date', NULL)->get();
-        $states = State::findOrFail($id);  
-        return view('pages.form.state_edit')->with('states', $states);  
+    {        
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_state', $user_permissions ) ){
+            $states = State::where('deleted_date', NULL)->get();
+            $states = State::findOrFail($id);  
+            return view('pages.state.state_edit')->with('states', $states);  
+        }else{
+            return redirect()->route('home');
+        }    
     }
 
     /**
@@ -107,13 +117,18 @@ class StateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        $status = State::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'State Name Deleted Successfully !!');
+    {                
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_state', $user_permissions ) ){
+            $status = State::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'State Name Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'State Name Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'State Name Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
     }
 }

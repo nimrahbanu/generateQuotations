@@ -3,6 +3,10 @@
     'elementActive' => 'measurement'
 ])
 @section('content')
+@php 
+    $user_permisions = App\Http\Controllers\SlugController::get_user_permissions(Auth()->user()->id);
+@endphp
+@if( in_array('create_measurement', $user_permisions ) )
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -11,14 +15,14 @@
                 @csrf
                     <div class="card">
                         <div class="card-header card-header-primary bg-primary">
-                            <h4 class="card-title text-white" >{{ __('MEASUREMENT FORM') }}</h4>
+                            <h4 class="card-title text-white text-center" >{{ __('MEASUREMENT FORM') }}</h4>
                         </div>
                         <div class="card-body ml-3 mr-3">
                             <div class="row" >
                                 <div class="form-group col-md-6 ">
                                     <label for="measurement_name">Measurement Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-balance-scale icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="measurement_name" value="{{old('measurement_name')}}" placeholder="Measurement Name">
                                     </div> 
                                     @error('measurement_name')
@@ -28,7 +32,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="measurement_short_name">Measurement Short Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-balance-scale icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="measurement_short_name" value="{{old('measurement_short_name')}}" placeholder="Measurement Short Name">
                                     </div> 
                                     @error('measurement_short_name')
@@ -45,6 +49,8 @@
             </div>
         </div>
     </div>
+@endif    
+@if( in_array('list_measurement', $user_permisions ) )
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -61,7 +67,9 @@
                                                 <th>Id</th>
                                                 <th>Measurement Name</th>
                                                 <th>Measurement Short Name</th>
-                                                <th>Action</th>
+                                                @if( in_array('edit_measurement', $user_permisions ) || in_array('delete_measurement', $user_permisions ) )
+                                                    <th>Action</th>
+                                                @endif    
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -73,12 +81,16 @@
                                                     <td>{{ $measurement->measurement_name }}</td> 
                                                     <td>{{ $measurement->measurement_short_name }}</td> 
                                                     <td class="td-actions row">
-                                                    <a  href="{{route('measurement.edit',[$measurement->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    @if( in_array('edit_measurement', $user_permisions ) )
+                                                        <a  href="{{route('measurement.edit',[$measurement->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    @endif
+                                                    @if( in_array('delete_measurement', $user_permisions ) )
                                                         <form  method="post" action="{{route('measurement.destroy',[$measurement->id])}}"> 
                                                             @csrf
                                                             @method('delete')
                                                             <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                                                         </form> 
+                                                    @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -91,5 +103,5 @@
             </div>
         </div>
     </div>
-</div>
+@endif    
 @endsection

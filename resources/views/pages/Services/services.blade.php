@@ -3,6 +3,10 @@
     'elementActive' => 'service'
 ])
 @section('content') 
+@php 
+    $user_permisions = App\Http\Controllers\SlugController::get_user_permissions(Auth()->user()->id);
+@endphp
+@if( in_array('create_service', $user_permisions ) )
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -11,14 +15,14 @@
                 @csrf
                     <div class="card">
                         <div class="card-header card-header-primary bg-primary">
-                            <h4 class="card-title text-white" >{{ __('SERVICE FORM') }}</h4>
+                            <h4 class="card-title text-white text-center" >{{ __('SERVICE FORM') }}</h4>
                         </div>
                         <div class="card-body ml-3 mr-3">
                             <div class="row" >
                                 <div class="form-group col-md-6 ">
                                     <label for="service_name">Services Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-cogs icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="service_name" value="{{old('service_name')}}" placeholder=" Name">
                                     </div> 
                                     @error('service_name')
@@ -54,6 +58,8 @@
             </div>
         </div> 
     </div>
+@endif    
+@if( in_array('list_service', $user_permisions ) )
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -70,7 +76,9 @@
                                                 <th>Id</th>
                                                 <th>Service Name</th>
                                                 <th>Package Name</th>
-                                                <th>Action</th>
+                                                @if( in_array('edit_service', $user_permisions ) || in_array('delete_service', $user_permisions ) )
+                                                    <th>Action</th>
+                                                @endif    
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -95,12 +103,16 @@
                                                     @endif
                                                     </td> 
                                                     <td class="td-actions row">
-                                                    <a  href="{{route('service.edit',[$service->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    @if( in_array('edit_service', $user_permisions )  )
+                                                        <a  href="{{route('service.edit',[$service->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    @endif
+                                                    @if( in_array('delete_service', $user_permisions ) )
                                                         <form  method="post" action="{{route('service.destroy',[$service->id])}}"> 
                                                             @csrf
                                                             @method('delete')
                                                             <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                                                         </form> 
+                                                    @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -113,5 +125,5 @@
             </div>
         </div>
     </div>
-</div>
+@endif    
 @endsection

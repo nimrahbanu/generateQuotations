@@ -19,7 +19,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="work_name_id">Work Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-briefcase icon" aria-hidden="true"></i>
                                         <select class="form-control" id="work_name_id" name="work_name_id" style="height: 39px;" >
                                                 <option disabled selected>--Select Work Name--</option>
                                                 @if($work_names)
@@ -36,7 +36,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="Plannig_package_name">Package Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-archive icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="Plannig_package_name" value="{{$packages->Plannig_package_name}}" value="{{old('Plannig_package_name')}}">
                                     </div> 
                                     @error('Plannig_package_name')
@@ -46,7 +46,6 @@
                                 <div class="form-group col-md-6">
                                     <label for="we_provide">What you provide</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
                                         <textarea type="text" class="form-control" name="we_provide">{{$packages->we_provide}}</textarea>
                                     </div> 
                                     @error('we_provide')
@@ -56,7 +55,6 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="we_deliver">What we deliver</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
                                         <textarea type="text" class="form-control" name="we_deliver" >{{$packages->we_deliver}}</textarea>
                                     </div>  
                                     @error('we_deliver')

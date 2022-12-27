@@ -57,9 +57,29 @@
 												<th style="padding: 5px; border: 1px solid gray; background-color: gray; color: white;">What you provides</th>
 												<th style="padding: 5px; border: 1px solid gray; background-color: gray; color: white;">What we deliver</th>
 												<th style="padding: 5px; border: 1px solid gray; background-color: gray; color: white;">Rates/
-													@foreach($measurements as $measurement) 
-														{{ $measurement->measurement_name }} 
-													@endforeach
+														@php $i = 0; @endphp
+															@if(!empty($measurements) )
+																@foreach($measurements as $measurement)
+																	@if($measurement_id[$i] == $measurement->id)
+																		{{$measurement->measurement_name}}
+																	@endif
+																@endforeach
+															@endif
+														@php $i++; @endphp
+														<!-- @php $i = 0; @endphp
+														@if(isset($i))
+															@php print_r($measurement_id[$i]); @endphp
+																@if(!empty($rates) && !empty($measurements) )
+																	@foreach($rates as $rate)
+																	@foreach($measurements as $measurement)
+																		@if($measurement_id[$i] == $measurement->id)
+																			({{$measurement->measurement_name}})
+																		@endif
+																	@endforeach
+																	@endforeach
+																@endif
+														@endif
+														@php $i++; @endphp -->
 												</th>
 											</tr>
 										</thead>
@@ -67,15 +87,15 @@
 										@foreach($packages as $package) 
 											<tr style="margin-bottom: 2px;">
 												<td style="padding: 2px; border: 1px solid gray;">
-												{{ str_replace("<br>", "\r\n", $package->we_provide); }}
+													{{ str_replace("<br>", "\r\n", $package->we_provide); }}
 													
 												</td>
 												<td style="padding: 2px; border: 1px solid gray;">
-														{{ $package->we_deliver }}
-														@php	echo '<br>'; @endphp
+													{{ $package->we_deliver }}
+													@php	echo '<br>'; @endphp
 												</td>
 												<td style="padding: 10px; border: 1px solid gray;">
-														@php  $price =  json_decode($package->rate_id); @endphp
+													@php  $price =  json_decode($package->rate_id); @endphp
 														@foreach($rates as $rate)
 															@if(in_array($rate->id, $price)  )
 																{{$rate->price}} {{'/'}} {{$rate->measurement_name_info['measurement_name']}} ( {{$rate->value}} {{$rate->condition}} {{$rate->measurement_name_info['measurement_name']}} )
@@ -84,7 +104,7 @@
 														@endforeach
 												</td>
 											</tr>
-											@endforeach
+										@endforeach
 										</tbody>
 									</table>
 										<p style="text-align: left;"><b>Project Details</b></p>
@@ -95,79 +115,95 @@
 												<th style="padding: 10px; border: 1px solid gray; background-color: gray; color: white;">Project ID</th>
 												<th style="padding: 10px; border: 1px solid gray; background-color: gray; color: white;">Rates</th>
 												<th style="padding: 10px; border: 1px solid gray; background-color: gray; color: white;">Area 
-													@foreach($measurements as $measurement) 
-														{{ $measurement->measurement_name }} 
-													@endforeach
+														@php $i = 0; @endphp
+															<!-- @php print_r($measurement_id[$i]); @endphp -->
+															<!-- {{$measurement_id[$i]}} -->
+															@if( !empty($measurements) )
+																@foreach($measurements as $measurement)
+																	@if($measurement_id[$i] == $measurement->id)
+																		{{$measurement->measurement_name}}
+																	@endif
+																@endforeach
+															@endif
+														@php $i++; @endphp
+														<!-- @php $i = 0; @endphp
+														@if(isset($i))
+														@php print_r($measurement_id[$i]); @endphp
+															@if(!empty($rates) && !empty($measurements) )
+																@foreach($rates as $rate)
+																@foreach($measurements as $measurement)
+																	@if($measurement_id[$i] == $measurement->id)
+																		({{$measurement->measurement_name}})
+																	@endif
+																@endforeach
+																@endforeach
+															@endif
+														@endif
+														@php $i++; @endphp -->
 												</th>
 												<th style="padding: 10px; border: 1px solid gray; background-color: gray; color: white;">Amount</th>
 												<th style="padding: 10px; border: 1px solid gray; background-color: gray; color: white;">Deadline</th>
 											</tr>
 										</thead>
-										<tbody style="padding-top: 15px;">@php $i = 0; @endphp
-										@foreach($packages as $package) 
-											<tr style="margin-bottom: 7px;">	
-													<td style="padding: 10px; border: 1px solid gray;">	
-														@php $data =  json_encode($Plannig_package_name); @endphp
-														@if( in_array($package->id, $Plannig_package_name) )
-															{!! nl2br($package->Plannig_package_name) !!} 
-														@endif
-													</td>
-													<td style="padding: 10px; border: 1px solid gray;">{{$package->work_name_id}}</td>
-													<td style="padding: 10px; border: 1px solid gray;">
-														<!-- @foreach($rates as $rate)
-															@foreach($measurements as $measurement) 
-														(INR  {{ $rate->price }}/ {{ $measurement->measurement_name }})
-															@endforeach
-														@endforeach -->
+										<tbody style="padding-top: 15px;">
+												@php $i = 0; @endphp
+												@foreach($packages as $package) 
+													<tr style="margin-bottom: 7px;">	
+														<td style="padding: 10px; border: 1px solid gray;">	
+															@php $data =  json_encode($Plannig_package_name); @endphp
+															@if( in_array($package->id, $Plannig_package_name) )
+																{!! nl2br($package->Plannig_package_name) !!} 
+															@endif
+														</td>
+														<td style="padding: 10px; border: 1px solid gray;">{{$package->work_name_id}}</td>
+														<td style="padding: 10px; border: 1px solid gray;">
 														
-														@foreach($rates as $key=>$rate)
-															@php if(isset($i)){ @endphp
-																	@php $pcg_rate =  json_decode($package->rate_id); @endphp 
-																@if( ($area == $rate['value'] || '1' == $rate['value']) &&  ('=' == $rate['condition']) && $measurement_id == $rate->measurement_id  ) 
-																	INR {{ $rate->price }}/ {{$rate->measurement_name_info['measurement_name']}} ( {{ $rate->value }} {{ $rate->condition }}) 
-																	@php	echo '<br>'; @endphp	
-																@elseif($area > $rate['value']  && ('>=' == $rate['condition'])  && $measurement_id == $rate->measurement_id ) 
-																	INR {{$rate->price}} {{'/'}} {{$rate->measurement_name_info['measurement_name']}} ( {{ $rate->value }} {{ $rate->condition }}) 
-																	@php	echo '<br>'; @endphp	
-																@elseif($area < $rate['value']  && ('<=' == $rate['condition']) && $measurement_id == $rate->measurement_id  ) 
-																	INR {{$rate->price}} {{'/'}} {{$rate->measurement_name_info['measurement_name']}} ( {{ $rate->value }} {{ $rate->condition }}) 
-																	@php	echo '<br>'; @endphp	
-																@else
-																@endif	
-															@php } @endphp
-														@endforeach 
-														
-													</td>  
-													<td style="padding: 10px; border: 1px solid gray;">{{$area}}</td>
-													<td style="padding: 10px; border: 1px solid gray;">
-															@foreach($measurements as $measurement)
-																@php $pcg_rate =  json_decode($package->rate_id); @endphp
-																@foreach($rates as $key=>$rate)
-																@if( ($area == $rate['value'] || '1' == $rate['value']) && ('=' == $rate['condition']) && $measurement_id == $rate->measurement_id ) 
-																		@php $amount = $area * $rate['price']; @endphp 
-																		INR{!! nl2br($amount) !!}
-																		@php	echo '<br>'; @endphp
-																@elseif($area > $rate['value']  && ('>=' == $rate['condition']) && $measurement_id == $rate->measurement_id  ) 
-																		@php $amount = $area * $rate['price']; @endphp 
-																		INR{!! nl2br($amount) !!}
+															@foreach($rates as $key=>$rate)
+																	@if(  ($area < $rate['value'] || '1' == $rate['value']) &&  ( ('<=' == $rate['condition']) || $measurement_id == $rate->measurement_id ) )
+																		INR {{ $rate->price }}/ {{$rate->measurement_name_info['measurement_name']}} ( {{ $rate->value }} {{ $rate->condition }}) 
 																		@php	echo '<br>'; @endphp	
-																@elseif($area < $rate['value']  && ('<=' == $rate['condition'])  && $measurement_id == $rate->measurement_id ) 
-																		@php $amount = $area * $rate['price']; @endphp 
-																		INR{!! nl2br($amount) !!}
-																		@php	echo '<br>'; @endphp
-																@else
-																@endif
+																	@elseif ( ($area == $rate['value'] || '1' == $rate['value']) && ( ('=' == $rate['condition']) || $measurement_id == $rate->measurement_id) ) 
+																		INR {{$rate->price}} {{'/'}} {{$rate->measurement_name_info['measurement_name']}} ( {{ $rate->value }} {{ $rate->condition }}) 
+																		@php	echo '<br>'; @endphp	
+																	@elseif(  ($area > $rate['value'] || '1' == $rate['value']) && ( ('>=' == $rate['condition']) || $measurement_id == $rate->measurement_id)  ) 
+																		INR {{$rate->price}} {{'/'}} {{$rate->measurement_name_info['measurement_name']}} ( {{ $rate->value }} {{ $rate->condition }}) 
+																		@php	echo '<br>'; @endphp	
+																	@else
+																	@endif	
+															@endforeach 
+														</td>  
+														<td style="padding: 10px; border: 1px solid gray;">{{$area}}</td>
+														<td style="padding: 10px; border: 1px solid gray;">
+														
+																@foreach($rates as $key=>$rate)
+																	@foreach($measurements as $measurement)
+																		@php $pcg_rate =  json_decode($package->rate_id); @endphp
+																		@if(  ($area < $rate['value'] || '1' == $rate['value']) &&  ( ('<=' == $rate['condition']) || $measurement_id == $rate->measurement_id ) )
+																				@php $amount = $area * $rate['price']; @endphp 
+																				INR{!! nl2br($amount) !!}
+																				@php	echo '<br>'; @endphp
+																		@elseif ( ($area == $rate['value'] || '1' == $rate['value']) && ( ('=' == $rate['condition']) || $measurement_id == $rate->measurement_id) ) 
+																				@php $amount = $area * $rate['price']; @endphp 
+																				INR{!! nl2br($amount) !!}
+																				@php	echo '<br>'; @endphp	
+																		@elseif(  ($area > $rate['value'] || '1' == $rate['value']) && ( ('>=' == $rate['condition']) || $measurement_id == $rate->measurement_id)  ) 
+																				@php $amount = $area * $rate['price']; @endphp 
+																				INR{!! nl2br($amount) !!}
+																				@php	echo '<br>'; @endphp
+																		@else
+																		@endif
+																	@endforeach 
 																@endforeach 
-															@endforeach
-													</td>                                                       	 			
-													<td style="padding: 10px; border: 1px solid gray;">
-													@if(isset($i))
-															{{ $deadline[$i] }}
-													@endif
-													</td>                                                       	 			
-												</tr>
-											@php $i++; @endphp
+
+														</td>                                                       	 			
+														<td style="padding: 10px; border: 1px solid gray;">
+															@if(isset($i))
+															@php print_r($deadline[$i]); @endphp
+															@endif
+														</td>                                                       	 			
+													</tr>
 										@endforeach 
+												@php $i++; @endphp
 										</tbody>
 									</table>
 										<p style="text-align: left;"><b>Bank Details</b> </p>

@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::resource('/service','App\Http\Controllers\ServiceController');
 	Route::resource('/discount','App\Http\Controllers\DiscountController');
-	Route::resource('/msg/send','App\Http\Controllers\WhatsappController@send');
+	// Route::resource('/msg/send','App\Http\Controllers\WhatsappController@send');
 	
 	Route::resource('/genquotationCalculation','App\Http\Controllers\genquotationCalculationController');	
 	Route::post('/genquotationCalculation/email','App\Http\Controllers\genquotationCalculationController@email')->name('genquotationCalculation-email'); 
@@ -54,8 +54,16 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/genquotationCalculation/MsrmentName','App\Http\Controllers\genquotationCalculationController@getMsrmentName')->name('getMsrment');	
 	
 	Route::resource('/email-format','App\Http\Controllers\EmailController');
-
-	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
+	Route::resource('/acr', 'App\Http\Controllers\acrController');
+	Route::post('/acr/email','App\Http\Controllers\acrController@email')->name('acr-email'); 
+	Route::post('/acr/alldata', 'App\Http\Controllers\acrController@getallData')->name('getdata');
+	
+	Route::resource('/bank', 'App\Http\Controllers\BankController');
+	Route::resource('/permission', 'App\Http\Controllers\userPermissionController');
+	Route::resource('/user-role', 'App\Http\Controllers\UserRoleController');
+	 Route::resource('/slug', 'App\Http\Controllers\SlugController');
+	// Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
+	Route::resource('user', 'App\Http\Controllers\UserController');
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);

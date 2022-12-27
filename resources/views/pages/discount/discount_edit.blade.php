@@ -20,12 +20,11 @@
                                     <label for="discount">Discount %</label>
                                     <div class="input-container">
                                     <i class="fa fa-percent icon" aria-hidden="true"></i>
-
                                         <input type="text" class="form-control" name="discount" value="{{$discounts->discount}}">
                                     </div> 
                                     @error('discount')
-                                             <span class="text-danger">{{$message}}</span>
-                                        @enderror 
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror 
                                 </div>
                             </div>
                         </div>

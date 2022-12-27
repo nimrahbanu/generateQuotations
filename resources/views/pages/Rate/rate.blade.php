@@ -3,6 +3,10 @@
     'elementActive' => 'rate'
 ])
 @section('content')
+@php 
+    $user_permisions = App\Http\Controllers\SlugController::get_user_permissions(Auth()->user()->id);
+@endphp
+@if( in_array('create_rate', $user_permisions ) )
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -11,14 +15,14 @@
                     @csrf
                     <div class="card">
                         <div class="card-header card-header-primary bg-primary">
-                            <h4 class="card-title text-white" >{{ __('RATE FORM') }}</h4>
+                            <h4 class="card-title text-white text-center" >{{ __('RATE FORM') }}</h4>
                         </div>
                         <div class="card-body ml-3 mr-3">
                             <div class="row" >
                                 <div class="form-group col-md-6 ">
                                     <label for="name_id">Work Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-briefcase icon" aria-hidden="true"></i>
                                         <select class="form-control" id="name_id" name="name_id" style="height: 39px;">
                                           <option style="height: 39px;" disabled selected>--Select Work Name--</option>
                                           @if($work_name)
@@ -35,7 +39,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="price">Price</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-usd icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="price" value="{{old('price')}}" placeholder="price">
                                     </div> 
                                     @error('price')
@@ -47,7 +51,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="measurement_id"> Measurement Unit</label>
                                     <div class="input-container">
-                                         <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-balance-scale icon" aria-hidden="true"></i>
                                         <select class="form-control" id="measurement_id" name="measurement_id" style="height: 39px;">
                                           <option style="height: 39px;" disabled selected>--Select Measurement Name--</option>
                                           @if($measurement)
@@ -64,7 +68,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="condition">Conditions</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-cogs icon" aria-hidden="true"></i>
                                         <select class="form-control" id="condition" name="condition" style="height: 39px;">
                                           <option style="height: 39px;" disabled selected>--Select Condition--</option>
                                             <option value="=">=</option>
@@ -83,7 +87,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="value">Value</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-line-chart icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="value" value="{{old('value')}}" placeholder="value">
                                     </div> 
                                       
@@ -98,6 +102,8 @@
             </div>
         </div>
     </div>
+@endif    
+@if( in_array('list_rate', $user_permisions ) )
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -117,7 +123,9 @@
                                                 <th>Measurement Unit</th>
                                                 <th>Conditions</th>
                                                 <th>Value</th>
-                                                <th>Action</th>
+                                                @if( in_array('edit_rate', $user_permisions ) || in_array('delete_rate', $user_permisions ) )
+                                                    <th>Action</th>
+                                                @endif    
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -156,12 +164,16 @@
                                                         @endif
                                                     </td> 
                                                     <td class="td-actions row">
-                                                    <a  href="{{route('rate.edit',[$rate->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    @if( in_array('edit_rate', $user_permisions ) )
+                                                        <a  href="{{route('rate.edit',[$rate->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    @endif
+                                                    @if( in_array('delete_rate', $user_permisions ) )
                                                         <form  method="post" action="{{route('rate.destroy',[$rate->id])}}"> 
                                                             @csrf
                                                             @method('delete')
                                                             <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                                                         </form> 
+                                                    @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -174,5 +186,5 @@
             </div>
         </div>
     </div>
-</div>
+@endif    
 @endsection

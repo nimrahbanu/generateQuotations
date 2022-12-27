@@ -14,8 +14,14 @@ class CountryController extends Controller
      */
     public function index()
     {
-        $country = Country::where('deleted_date', NULL)->get();
-        return view('pages.form.country')->with('country', $country);
+        
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_country', $user_permissions ) ){
+            $country = Country::where('deleted_date', NULL)->get();
+            return view('pages.country.country')->with('country', $country);
+        // }else{
+        //     return redirect()->route('home');
+        // }    
     }
 
     /**
@@ -69,9 +75,14 @@ class CountryController extends Controller
      */
     public function edit($id)
     {
-        $country = Country::where('deleted_date', NULL)->get();
-        $country = Country::findOrFail($id);  
-        return view('pages.form.country_edit')->with('country', $country);  
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_country', $user_permissions ) ){
+            $country = Country::where('deleted_date', NULL)->get();
+            $country = Country::findOrFail($id);  
+            return view('pages.country.country_edit')->with('country', $country);  
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -107,12 +118,17 @@ class CountryController extends Controller
      */
     public function destroy($id)
     {
-        $status = Country::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Country Name Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_country', $user_permissions ) ){
+            $status = Country::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Country Name Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Country Name Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Country Name Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
-    }
+}
 }

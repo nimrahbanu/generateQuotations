@@ -14,8 +14,13 @@ class WorkNameController extends Controller
      */
     public function index()
     {
-        $work_name = WorkName::where('deleted_date', NULL)->get();
-        return view('pages.Work_name.work_name')->with('work_name', $work_name);
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_work_name', $user_permissions ) ){
+            $work_name = WorkName::where('deleted_date', NULL)->get();
+            return view('pages.Work_name.work_name')->with('work_name', $work_name);
+        // }else{
+        //     return redirect()->route('home');
+        // }    
    
     }
 
@@ -69,9 +74,15 @@ class WorkNameController extends Controller
      */
     public function edit($id)
     {
-        $work_name = WorkName::where('deleted_date', NULL)->get();
-        $work_name = WorkName::findOrFail($id);  
-        return view('pages.work_name.work_name_edit')->with('work_name', $work_name);  
+        
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_work_name', $user_permissions ) ){
+            $work_name = WorkName::where('deleted_date', NULL)->get();
+            $work_name = WorkName::findOrFail($id);  
+            return view('pages.work_name.work_name_edit')->with('work_name', $work_name);  
+        }else{
+            return redirect()->route('home');
+        }    
     }
 
     /**
@@ -108,12 +119,18 @@ class WorkNameController extends Controller
      */
     public function destroy($id)
     {
-        $status = WorkName::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Work Name Deleted Successfully !!');
+        
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_work_name', $user_permissions ) ){
+            $status = WorkName::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Work Name Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Work Name Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Work Name Not Deleted !!');
-        }
-        return redirect()->back();
+            return redirect()->route('home');
+        }   
     }
 }

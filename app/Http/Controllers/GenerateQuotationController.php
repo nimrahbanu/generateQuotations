@@ -15,9 +15,15 @@ class GenerateQuotationController extends Controller
      */
     public function index()
     {
-        $GenerateQuotation = GenerateQuotation::where('deleted_date', NULL)->get();
-        $discount = Discount::where('deleted_date', NULL)->get();
-        return view('pages.callLogEntry.generate_quotation')->with('GenerateQuotation', $GenerateQuotation)->with('discount', $discount);
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_upload_quotation', $user_permissions ) ){
+            $GenerateQuotation = GenerateQuotation::where('deleted_date', NULL)->get();
+            $discount = Discount::where('deleted_date', NULL)->get();
+            return view('pages.upload_quotation.add')->with('GenerateQuotation', $GenerateQuotation)->with('discount', $discount);
+    
+        // }else{
+        //     return redirect()->route('home');
+        // }
     }
     /**
      * Show the form for creating a new resource.
@@ -85,10 +91,15 @@ class GenerateQuotationController extends Controller
      */
     public function edit($id)
     {
-        $GenerateQuotation = GenerateQuotation::where('deleted_date', NULL)->get();
-        $discount = Discount::where('deleted_date', NULL)->get();
-        $GenerateQuotation = GenerateQuotation::findOrFail($id);  
-        return view('pages.callLogEntry.generate_quotation_edit')->with('GenerateQuotation', $GenerateQuotation)->with('discount', $discount);  
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_upload_quotation', $user_permissions ) ){
+            $GenerateQuotation = GenerateQuotation::where('deleted_date', NULL)->get();
+            $discount = Discount::where('deleted_date', NULL)->get();
+            $GenerateQuotation = GenerateQuotation::findOrFail($id);  
+            return view('pages.upload_quotation.edit')->with('GenerateQuotation', $GenerateQuotation)->with('discount', $discount);  
+        }else{
+            return redirect()->route('home');
+        }
     }
     //     print_r('<pre>');
     //     // print_r($GenerateQuotation);
@@ -146,12 +157,17 @@ class GenerateQuotationController extends Controller
      */
     public function destroy($id)
     {
-        $status = GenerateQuotation::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Quotation Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_upload_quotation', $user_permissions ) ){
+            $status = GenerateQuotation::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Quotation Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Quotation Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Quotation Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
-    }
+}
 }

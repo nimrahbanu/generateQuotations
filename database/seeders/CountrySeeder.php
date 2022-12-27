@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,23 +14,28 @@ class CountrySeeder extends Seeder
      */
     public function run()
     {
+        BD::table('countries')->insert([
+            'name' => 'Afghanistan',
+            'created_at' =>now(),
+            'updated_at'=> now()
+        ]);
         DB::table('countries')->insert([
-            'country' => 'Afghanistan',
-            'created_at' => now(),
+            'name' => 'Albania',
+            'created_at' =>now(),
             'updated_at' => now()
         ]);
         DB::table('countries')->insert([
-            'country' => 'Albania',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-          DB::table('countries')->insert([
             'country' => 'Algeria',
             'created_at' => now(),
             'updated_at' => now()
         ]);
         DB::table('countries')->insert([
             'country' => 'India',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('countries')->insert([
+            'country' => 'Pak',
             'created_at' => now(),
             'updated_at' => now()
         ]);

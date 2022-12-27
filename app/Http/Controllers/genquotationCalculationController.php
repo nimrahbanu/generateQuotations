@@ -22,13 +22,18 @@ class genquotationCalculationController extends Controller
      */
     public function index()
     {
-        $measurements = Measurement::where('deleted_date', NULL)->get();
-        $packages = Package::where('deleted_date', NULL)->get();
-        $prospects = Prospect::where('deleted_date', NULL)->get();
-        $work_names = WorkName::where('deleted_date', NULL)->get();
-        $rates = Rate::where('deleted_date', NULL)->get();
-        return view('pages.generateQoutation.generateQuotation')->with('prospects', $prospects)->with('work_names', $work_names)->with('packages', $packages)->with('measurements', $measurements)->with('rates', $rates);
-
+       
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('create_generate_quotation', $user_permissions ) ){
+             $measurements = Measurement::where('deleted_date', NULL)->get();
+            $packages = Package::where('deleted_date', NULL)->get();
+            $prospects = Prospect::where('deleted_date', NULL)->get();
+            $work_names = WorkName::where('deleted_date', NULL)->get();
+            $rates =   Rate::where('deleted_date', NULL)->get();
+            return view('pages.generateQoutation.generateQuotation')->with('prospects', $prospects)->with('work_names', $work_names)->with('packages', $packages)->with('measurements', $measurements)->with('rates', $rates);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -75,50 +80,50 @@ class genquotationCalculationController extends Controller
         $measurements = Measurement::where('id',$request->measurement_id)->get();
         $work_names = WorkName::where('id',$request->name_id)->get();
         $rates = Rate::where('deleted_date', NULL)->where('name_id', $request->work_name_id)->with('measurement_name_info')->get();
+        // $rates =  Rate::where('name_id', $request->id)->with('measurement_name_info')->select('measurement_id')->groupBy('measurement_id')->get()->toArray();
+        
         $packages = Package::where('deleted_date', NULL)->where('work_name_id', $request->work_name_id)->with('work_name_info')->with('rate_info')->get();
         $prospects = Prospect::where('id',$request->prospect_id)->with('state_info')->with('country_info')->first();
            
-            $work_name_id  = $request->work_name_id;
-            $measurement_id  = $request->measurement_id;
-            $Plannig_package_name  = $request->Plannig_package_name;
-            $name = $prospects->name;
-            $state_id = $prospects->state_info['state'];
-            $country_id = $prospects->country_info['country'];
-            $email_id = $prospects->email_id;
-            $prospect_id = $prospects->id;
-            $area = $request->area;
-            $deadline = $request->deadline;
-            //    print_r($measurement_id);
-            foreach($packages as $package){
-                $pcg_rate =  json_decode($package->rate_id); 
-                foreach($rates as $key=>$rate){
-                if($area >= $rate['value'] ){
-                             $amount = $area * $rate['price'];
-                        }else{  
-                             $amount = $area * $rate['price'];
-                        }
+        $work_name_id  = $request->work_name_id;
+        $measurement_id  = $request->measurement_id;
+        $Plannig_package_name  = $request->Plannig_package_name;
+        $name = $prospects->name;
+        $state_id = $prospects->state_info['state'];
+        $country_id = $prospects->country_info['country'];
+        $email_id = $prospects->email_id;
+        $prospect_id = $prospects->id;
+        $area = $request->area;
+        $deadline = $request->deadline;
+        $amount = 0;   
+        foreach($packages as $package){
+            $pcg_rate =  json_decode($package->rate_id); 
+            foreach($rates as $key=>$rate){
+            if($area >= $rate['value'] ){
+                            $amount = $area * $rate['price'];
+                    }else{  
+                            $amount = $area * $rate['price'];
                     }
-                }    
-        // if($price == $rate->id){
-        //     print_r($rate->price);
-        // }
-        // print_r('<br>');
-        
-        // print_r('<br>');
-        //  if($rate->value == $amount)  {
-        //     $amount = $amount; 
-        //     }
-        //     elseif($rate->value <= $amount)  {
-        //         $amount = $amount * $rate->price ;
-        //     }
-        //     else{
-        //         $amount = $amount * $rate->price ;
-        //     }
-        // if(in_array($rate->name_id, $price)  ){
-        //     $rate->value > $amount;
-        //     $amount = $rate->value * $amount;
-        //     }
-        // die();
+                }
+            }    
+            // foreach($measurements as $measurement){
+
+            // }
+            // if($measurement_id == $measurement->id)
+            // $measurement_id = 
+            // print_r('<pre>');
+            // print_r($rates);
+            // print_r('<br>');
+            // print_r($work_name_id);
+            // print_r('<br>');
+            // print_r($area);
+            // print_r('<br>');
+            // print_r($measurement_id);
+            // print_r('<br>');
+            // print_r($Plannig_package_name);
+            // print_r('<br>');
+            // print_r($deadline);
+            // die();
         $pdf = PDF::loadview('pages.generateQoutation.genQuotationformat', compact('name', 'state_id', 'country_id', 'email_id',
         'work_name_id', 'packages', 'area', 'amount', 'prospects','measurements', 'rates', 'deadline', 'Plannig_package_name', 'measurement_id'))->setOptions(['defaultFont' => 'sans-serif']);
       $output = $pdf->output(); 
@@ -128,7 +133,8 @@ class genquotationCalculationController extends Controller
         \Storage::disk('local')->put('/project/'.$file_name, $output);
         if(!empty($request->email)){
         $storagePath  = \Storage::disk('local')->path('project/'.$file_name);
-           Mail::send('emails.project', ['user' => $prospects, 'path' => $storagePath], function ($mail) use ($prospects, $storagePath) {
+           Mail::send('emails.project', ['user' => $prospects, 'path' => $storagePath], function ($mail) use ($prospects, $storagePath) 
+           {
                 $mail->from($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
                 $mail->to($prospects->email_id, $prospects->name)->subject('project details');
                 $mail->attach($storagePath);
@@ -185,10 +191,7 @@ class genquotationCalculationController extends Controller
      * @param  \App\Models\genQuotationCalculation  $genQuotationCalculation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(genQuotationCalculation $genQuotationCalculation)
-    {
-        //
-    }
+   
     public function getPackageName(Request $request){
         $package_name = Package::where('work_name_id', $request->id)->get()->toArray();
         $rates = Rate::where('name_id', $request->id)->with('measurement_name_info')->get()->toArray();
@@ -197,10 +200,9 @@ class genquotationCalculationController extends Controller
       
     }  
     public function getMsrmentName(Request $request){
-        $measurements = Measurement::where('id',$request->measurement_id)->get();
-        $rates = Rate::where('name_id', $request->id)->with('measurement_name_info')->get()->toArray();
-        return json_encode($rates);
-      
+        $measurements = Measurement::where('id',$request->measurement_id)->get();        
+        $rates =  Rate::where('name_id', $request->id)->with('measurement_name_info')->select('measurement_id')->groupBy('measurement_id')->get()->toArray();
+       return json_encode($rates);
+ 
     }  
-   
 }

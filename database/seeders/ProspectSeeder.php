@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,6 +25,7 @@ class ProspectSeeder extends Seeder
             'phone' => '5432167890',
             'whatsapp_no' => '9414372365',
             'email_id' => 'sadik@gmail.com',
+            'package_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -40,6 +40,7 @@ class ProspectSeeder extends Seeder
             'phone' => '5432167891',
             'whatsapp_no' => '9414312365',
             'email_id' => 'nimrah@gmail.com',
+            'package_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -54,6 +55,7 @@ class ProspectSeeder extends Seeder
             'phone' => '5432167890',
             'whatsapp_no' => '9414372365',
             'email_id' => 'sadik@gmail.com',
+            'package_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -68,6 +70,7 @@ class ProspectSeeder extends Seeder
             'phone' => '5432167890',
             'whatsapp_no' => '9414372365',
             'email_id' => 'sadik@gmail.com',
+            'package_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -82,6 +85,7 @@ class ProspectSeeder extends Seeder
             'phone' => '5432167890',
             'whatsapp_no' => '9414372365',
             'email_id' => 'sadik@gmail.com',
+            'package_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
         ]);

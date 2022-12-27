@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\Prospect;
+use App\Models\Package;
 use Illuminate\Http\Request;
 
 class ProspectController extends Controller
@@ -16,11 +17,17 @@ class ProspectController extends Controller
      */
     public function index()
     {
-        $states = State::where('deleted_date', NULL)->get();
-        $countries = Country::where('deleted_date', NULL)->get();
-        $prospects = Prospect::where('deleted_date', NULL)->get();
-        return view('pages.form.prospect')->with('prospects', $prospects)->with('countries', $countries)->with('states', $states);
-    }
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_prospect', $user_permissions ) ){
+            $packages = Package::where('deleted_date', NULL)->get();
+            $states = State::where('deleted_date', NULL)->get();
+            $countries = Country::where('deleted_date', NULL)->get();
+            $prospects = Prospect::where('deleted_date', NULL)->get();
+            return view('pages.prospect.prospect')->with('prospects', $prospects)->with('countries', $countries)->with('states', $states)->with('packages', $packages);
+        // }else{
+        //     return redirect()->route('home');
+        // }
+      }
 
     /**
      * Show the form for creating a new resource.
@@ -81,11 +88,17 @@ class ProspectController extends Controller
      */
     public function edit($id)
     {
-        $prospect = Prospect::where('deleted_date', NULL)->get();
-        $states = State::where('deleted_date', NULL)->get();
-        $countries = Country::where('deleted_date', NULL)->get();
-        $prospect = Prospect::findOrFail($id);  
-        return view('pages.form.prospect_edit')->with('prospect', $prospect)->with('states', $states)->with('countries', $countries);  
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_prospect', $user_permissions ) ){
+            $packages = Package::where('deleted_date', NULL)->get();
+            $prospect = Prospect::where('deleted_date', NULL)->get();
+            $states = State::where('deleted_date', NULL)->get();
+            $countries = Country::where('deleted_date', NULL)->get();
+            $prospect = Prospect::findOrFail($id);  
+            return view('pages.prospect.prospect_edit')->with('prospect', $prospect)->with('states', $states)->with('countries', $countries)->with('packages', $packages);  
+        }else{
+                return redirect()->route('home');
+            }
     }
 
     /**
@@ -128,12 +141,17 @@ class ProspectController extends Controller
      */
     public function destroy($id)
     {
-        $status = Prospect::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Prospect Form Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_prospect', $user_permissions ) ){
+             $status = Prospect::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Prospect Form Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Prospect Form Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Prospect Form Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
     }
 }

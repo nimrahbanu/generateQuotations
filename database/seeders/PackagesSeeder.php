@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,7 +13,7 @@ class PackagesSeeder extends Seeder
      * @return void
      */
     public function run()
-{
+    {
         DB::table('packages')->insert([
             'Plannig_package_name' => 'Planning Package 1',
             'work_name_id' => '1',
@@ -105,6 +104,68 @@ class PackagesSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
-       }
+        DB::table('packages')->insert([
+            'Plannig_package_name' => 'Working Drawings Package 1',
+            'work_name_id' => '6',
+            'we_provide' => 'Plan & Elevation',
+            'we_deliver' =>  '1. Structure drawings that includes:
+                            (i) Column layout
+                            (ii) Center line
+                            (iii) Footing plan
+                            (iv) Footing and column details
+                            (v) Ground and plinth beam
+                            (vi) Plinth slab
+                            (vii) Roof beam plan
+                            (viii) RCC water storage tank
+                            (ix) Staircase
+                            2. Plumbing
+                            3. Drainage line
+                            4. Door & windows plan
+                            5. Door & windows schedule
+                            6. Electrical drawing that include:
+                            (i) Roof electrical
+                            (ii) Wall electrical
+                            7. Working plan
+                            8. Elevation working detals', 
+            'rate_id' => '[\"14\",\"15\",\"16\"]',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('packages')->insert([
+            'Plannig_package_name' => 'Exterior Package 1',
+            'work_name_id' => '4',
+            'we_provide' => 'Plan & Elevation',
+            'we_deliver' =>  '3D View', 
+            'rate_id' => '[\"17\",\"18\",\"19\",\"20\",\"21\",\"22\",\"23\",\"24\",\"25\"]',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('packages')->insert([
+            'Plannig_package_name' => 'Exterior Package 2',
+            'work_name_id' => '4',
+            'we_provide' => 'Plan',
+            'we_deliver' =>  'One 2D Elevation & one 3D View / Interactive View', 
+            'rate_id' => '[\"26\",\"27\",\"28\",\"29\",\"30\",\"31\",\"33\",\"34\",\"35\"]',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('packages')->insert([
+            'Plannig_package_name' => 'Exterior Package 3',
+            'work_name_id' => '4',
+            'we_provide' => 'Plan',
+            'we_deliver' =>  'Two 2D Elevations & Two 3D Views / Interactive Views', 
+            'rate_id' => '[\"36\",\"37\",\"38\",\"39\",\"40\",\"41\",\"42\",\"43\",\"44\"]',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('packages')->insert([
+            'Plannig_package_name' => 'Exterior Package 4',
+            'work_name_id' => '4',
+            'we_provide' => 'Plan',
+            'we_deliver' =>  'Two 2D Elevations & One 3D View / Interactive View', 
+            'rate_id' => '[\"45\",\"46\",\"47\",\"48\",\"49\",\"50\",\"51\",\"52\",\"53\"]',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+    }
 }
- 

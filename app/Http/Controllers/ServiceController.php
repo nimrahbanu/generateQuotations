@@ -14,10 +14,15 @@ class ServiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $packages = Package::where('deleted_date', NULL)->get();
-        $service = Service::where('deleted_date', NULL)->get();
-        return view('pages.Services.services')->with('service', $service)->with('packages', $packages);
+    {  
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_service', $user_permissions ) ){
+             $packages = Package::where('deleted_date', NULL)->get();
+            $service = Service::where('deleted_date', NULL)->get();
+            return view('pages.Services.services')->with('service', $service)->with('packages', $packages);
+        // }else{
+        //     return redirect()->route('home');
+        // }
     }
  
     /**
@@ -74,10 +79,15 @@ class ServiceController extends Controller
      */ 
     public function edit($id)
     { 
-        $packages = Package::where('deleted_date', NULL)->get();
-        $service = Service::where('deleted_date', NULL)->get();
-        $service = Service::findOrFail($id);  
-        return view('pages.Services.services_edit')->with('service', $service)->with('packages', $packages);
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('create_service', $user_permissions ) ){
+            $packages = Package::where('deleted_date', NULL)->get();
+            $service = Service::where('deleted_date', NULL)->get();
+            $service = Service::findOrFail($id);  
+            return view('pages.Services.services_edit')->with('service', $service)->with('packages', $packages);
+        }else{
+            return redirect()->route('home');
+        }
     }
 
     /**
@@ -114,12 +124,17 @@ class ServiceController extends Controller
      */
     public function destroy($id)
     {
-        $status = Service::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Service Data Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_service', $user_permissions ) ){
+            $status = Service::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Service Data Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Service Data Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Service Data Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
     }
 }

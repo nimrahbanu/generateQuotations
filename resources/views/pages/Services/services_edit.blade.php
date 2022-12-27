@@ -19,7 +19,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="service_name">Services Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-cogs icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="service_name" value="{{$service->service_name}}" >
                                     </div> 
                                     @error('service_name')

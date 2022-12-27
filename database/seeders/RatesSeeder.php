@@ -1,7 +1,6 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,7 +14,7 @@ class RatesSeeder extends Seeder
      */
     public function run()
     {
-         DB::table('rates')->insert([
+       DB::table('rates')->insert([
             'name_id' => '1',
             'price' => '4',
             'value' => '3000',
@@ -123,6 +122,5 @@ class RatesSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
-       
     }
 }

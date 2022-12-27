@@ -19,6 +19,7 @@ class Prospect extends Model
         'phone',
         'whatsapp_no',
         'email_id',
+        'package_id',
         'deleted_date',
     ];
     public function state_info(){
@@ -26,5 +27,8 @@ class Prospect extends Model
    }
    public function country_info(){
     return $this->hasOne('App\Models\Country', 'id', 'country_id');
+   }
+   public function package_info(){
+    return $this->hasOne('App\Models\package', 'id', 'package_id');
    }
 }

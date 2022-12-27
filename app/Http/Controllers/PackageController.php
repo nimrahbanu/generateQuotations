@@ -16,17 +16,23 @@ class PackageController extends Controller
      */
     public function index()
     {
-        $work_names = WorkName::where('deleted_date', NULL)->get();
-        $rates = Rate::where('deleted_date', NULL)->get();
-        $packages = Package::where('deleted_date', NULL)->get();
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_package', $user_permissions ) ){
+            $work_names = WorkName::where('deleted_date', NULL)->get();
+            $rates = Rate::where('deleted_date', NULL)->get();
+            $packages = Package::where('deleted_date', NULL)->get();
+            return view('pages.Package.package')->with('packages', $packages)->with('rates', $rates)->with('work_names', $work_names);
+        // }else{
+        //     return redirect()->route('home');
+        // }
+    }
         // $packages = DB::table('packages')->select('rate_id')
         //     ->get();
            
         // print_r('<pre>');
         // print_r($rate);
         // die();
-        return view('pages.Package.package')->with('packages', $packages)->with('rates', $rates)->with('work_names', $work_names);
-    }
+    
 
     /** 
      * Show the form for creating a new resource.
@@ -88,12 +94,17 @@ class PackageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        $work_names = WorkName::where('deleted_date', NULL)->get();
-        $rates = Rate::where('deleted_date', NULL)->get();
-        $packages = Package::where('deleted_date', NULL)->get();
-        $packages = Package::findOrFail($id);  
-        return view('pages.package.package_edit')->with('rates', $rates)->with('work_names', $work_names)->with('packages', $packages);
+    {        
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_package', $user_permissions ) ){
+            $work_names = WorkName::where('deleted_date', NULL)->get();
+            $rates = Rate::where('deleted_date', NULL)->get();
+            $packages = Package::where('deleted_date', NULL)->get();
+            $packages = Package::findOrFail($id);  
+            return view('pages.package.package_edit')->with('rates', $rates)->with('work_names', $work_names)->with('packages', $packages);
+        }else{
+            return redirect()->route('home');
+        }
     }
     /**
      * Update the specified resource in storage.
@@ -134,13 +145,18 @@ class PackageController extends Controller
      */
     public function destroy($id)
     {
-        $status = Package::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Package Format Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_package', $user_permissions ) ){
+            $status = Package::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Package Format Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Package Format Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Package Format Not Deleted !!');
+            return redirect()->route('home');
         }
-        return redirect()->back();
     }
 
     /**

@@ -19,7 +19,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="work_name">Work Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-briefcase icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="work_name" value="{{$work_name->work_name}}" >
                                     </div> 
                                     @error('work_name')

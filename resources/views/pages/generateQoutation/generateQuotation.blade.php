@@ -3,6 +3,10 @@
     'elementActive' => 'generateQuotation'
 ])
 @section('content') 
+@php 
+    $user_permisions = App\Http\Controllers\SlugController::get_user_permissions(Auth()->user()->id);
+@endphp
+@if( in_array('create_generate_quotation', $user_permisions ) )
 <div class="content">
     <div class="container-fluid"> 
         <div class="row">
@@ -16,7 +20,8 @@
                         <div class="card-body ml-3 mr-3">
                             <div class="row" >
                                 <div class="form-group col-md-6">
-                                    <label for="prospect_id">Proprietor Name</label>
+                             
+                                <label for="prospect_id">Proprietor Name</label>
                                     <div class="input-container">
                                         <i class="fa fa-user icon"></i>
                                        <select name="prospect_id" class="form-control" id="prospect_id" style="height: 39px;">
@@ -54,7 +59,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="area">Area</label>
                                     <div class="input-container">
-                                        <i class="fa fa-address-card icon" aria-hidden="true"></i>
+                                        <i class="fa fa-area-chart icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control"  name="area" value="{{old('area')}}"  placeholder="area"> 
                                     </div>
                                         @error('area')
@@ -64,15 +69,30 @@
                                 <div class="form-group col-md-6" id="hideValuesOnmeasurement" >
                                     <label for="measurement_id">Measurement Name</label>
                                     <div class="row">
-                                        @if($rates)
-                                            @foreach($rates as $rate)
-                                                <div class="col-sm-6" style="display:none">
+                                    @if(!empty($rates) && !empty($measurements) )
+                                        @foreach($rates as $rate)
+                                            @foreach($measurements as $measurement)
+                                            <div class="col-sm-6"  style="display:none">
                                                     <input type="checkbox" name="measurement_id[]" value="{{$rate->id}}" id="{{$rate->measurement_id}}"> <label for="{{$rate->measurement_id }}">
-                                                        {{ $rate->measurement_id}}
+                                                    @if($rate->measurement_id == $measurement->id)
+                                                        {{$rate->measurement_name_info['measurement_id']}}
+                                                    @endif
                                                     </label>
                                                 </div>
                                             @endforeach
-                                         @endif
+                                        @endforeach
+                                    @endif
+                                     <!-- @foreach($rates as $rate)
+                                        @foreach($measurements as $measurement)
+                                            <div class="col-sm-6" style="display:none">
+                                                    <input type="checkbox" name="measurement_id[]" ffff value="{{$measurement->id}}"  id="{{$measurement->measurement_name}}"> 
+                                                    <label for="{{$measurement->measurement_name }}">
+                                                    {{$measurement->measurement_name }}dfd
+                                                    </label>
+                                                </div>
+                                        @endforeach 
+                                        @endforeach  -->
+                                   
                                     </div>
                                     @error('measurement_id')
                                             <span class="text-danger">{{$message}}</span>
@@ -85,7 +105,8 @@
                                 <div class="row" >
                                  @foreach($packages as $package)
                                        <div class="col-sm-6" style="display:none">
-                                            <input type="checkbox" name="Plannig_package_name[]" value="{{$package->id}}" id="{{$package->Plannig_package_name}}"> <label for="{{$package->Plannig_package_name }}">
+                                            <input type="checkbox" name="Plannig_package_name[]" value="{{$package->id}}" id="{{$package->Plannig_package_name}}"> 
+                                            <label for="{{$package->Plannig_package_name }}">
                                             {{$package->Plannig_package_name}} 
                                             </label>
                                         </div>
@@ -111,6 +132,22 @@
             </div>
         </div>
     </div>
+</div> 
+@else
+<div class="content">
+    <div class="container-fluid"> 
+        <div class="row">
+            <div class="offset-md-1 col-md-10"> 
+                <div class="card">
+                    <div class="card-header card-header-primary bg-primary">
+                        <h4 class="card-title text-white text-center" >{{ __('No Data') }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')
@@ -158,7 +195,7 @@ jQuery(document).on('change','#work_name_id', function () {
             var html = '';
             $.each(measurement_id, function( index, value ) {
                 html += '<div class="col-sm-6">'+
-                                '<input type="checkbox" name="measurement_id[]" value="'+value.id+'"> <label for="'+value.measurement_id+'">'+
+                                '<input type="checkbox" name="measurement_id[]" value="'+value.measurement_id+'"> <label for="'+value.measurement_id+'">'+
                                 value.measurement_name_info.measurement_name+
                                 '</label>'+
                             '</div>';

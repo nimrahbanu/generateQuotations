@@ -3,6 +3,10 @@
     'elementActive' => 'discount'
 ])
 @section('content')
+@php 
+    $user_permisions = App\Http\Controllers\SlugController::get_user_permissions(Auth()->user()->id);
+@endphp
+@if( in_array('create_discount', $user_permisions ) )
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -11,7 +15,7 @@
                 @csrf
                     <div class="card">
                         <div class="card-header card-header-primary bg-primary">
-                            <h4 class="card-title text-white" >{{ __('DISCOUNT FORM') }}</h4>
+                            <h4 class="card-title text-white text-center" >{{ __('DISCOUNT FORM') }}</h4>
                         </div>
                         <div class="card-body ml-3 mr-3">
                             <div class="row" >
@@ -35,6 +39,8 @@
             </div>
         </div>
     </div>
+@endif    
+@if( in_array('list_discount', $user_permisions ) )
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -50,7 +56,9 @@
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Discount</th>
-                                                <th>Action</th>
+                                                @if( in_array('edit_discount', $user_permisions ) || in_array('delete_discount', $user_permisions ) )
+                                                    <th>Action</th>
+                                                @endif    
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,12 +69,16 @@
                                                     <td> @php echo $i; @endphp</td>
                                                     <td>{{ $discount->discount }} <i class="fa fa-percent" style="color: #7d7d7d;" aria-hidden="true"></i></td> 
                                                     <td class="td-actions row">
+                                                    @if( in_array('edit_discount', $user_permisions ))
                                                         <a  href="{{route('discount.edit',[$discount->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                                        <form  method="post" action="{{route('discount.destroy',[$discount->id])}}"> 
-                                                            @csrf
-                                                            @method('delete')
-                                                            <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                                        </form>
+                                                    @endif
+                                                    @if(  in_array('delete_discount', $user_permisions ) )
+                                                    <form  method="post" action="{{route('discount.destroy',[$discount->id])}}"> 
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                                                    </form>
+                                                    @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -79,5 +91,5 @@
             </div>
         </div>
     </div>
-</div>
+@endif    
 @endsection

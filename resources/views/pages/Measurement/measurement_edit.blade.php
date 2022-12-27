@@ -19,7 +19,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="measurement_name">Measurement Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-balance-scale icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="measurement_name"  value="{{$measurement->measurement_name}}" placeholder="Measurement Name">
                                     </div> 
                                     @error('measurement_name')
@@ -29,7 +29,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="measurement_short_name">Measurement Short Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-balance-scale icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="measurement_short_name"  value="{{$measurement->measurement_short_name}}" placeholder="Measurement Short Name">
                                     </div> 
                                     @error('measurement_short_name')

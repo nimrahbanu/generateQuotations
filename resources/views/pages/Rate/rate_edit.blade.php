@@ -19,7 +19,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="name_id">Work Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-briefcase icon" aria-hidden="true"></i>
                                         <select class="form-control" id="name_id" name="name_id" style="height: 39px;">
                                           <option style="height: 39px;" disabled selected>--Select Work Name--</option>
                                           @foreach($work_name as $work_name)
@@ -34,7 +34,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="price">Price</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-usd icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="price"  value="{{$rate->price}}"  placeholder="price">
                                     </div> 
                                     @error('price')
@@ -46,7 +46,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="measurement_id"> Measurement Unit</label>
                                     <div class="input-container">
-                                         <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-balance-scale icon" aria-hidden="true"></i>
                                          <select class="form-control" id="measurement_id" name="measurement_id" style="height: 39px;">
                                           <option style="height: 39px;" disabled selected>--Select Measurement Name--</option>
                                                 @foreach($measurement as $measurement)
@@ -61,7 +61,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="condition">Conditions</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-cogs icon" aria-hidden="true"></i>
                                         <select class="form-control" id="condition" name="condition" style="height: 39px;">
                                           <option style="height: 39px;" disabled selected>--Select Condition--</option>
                                             <option value="=" @php echo $rate->condition == "=" ? "selected" : ""; @endphp>=</option>
@@ -80,7 +80,7 @@
                                 <div class="form-group col-md-6 ">
                                     <label for="value">Value</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                    <i class="fa fa-line-chart icon" aria-hidden="true"></i>
                                         <input type="text" class="form-control" name="value"  value="{{$rate->value}}"  placeholder="value">
                                     </div> 
                                     <!-- @error('value')

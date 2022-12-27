@@ -3,6 +3,10 @@
     'elementActive' => 'package'
 ])
 @section('content')
+@php 
+    $user_permisions = App\Http\Controllers\SlugController::get_user_permissions(Auth()->user()->id);
+@endphp
+@if( in_array('create_package', $user_permisions ) )
 <div class="content">
     <div class="container-fluid">
         <div class="row">
@@ -11,15 +15,14 @@
                     @csrf
                     <div class="card">
                         <div class="card-header card-header-primary bg-primary">
-                            <h4 class="card-title text-white" >{{ __('PACKAGE FORM') }}</h4>
+                            <h4 class="card-title text-white text-center" >{{ __('PACKAGE FORM') }}</h4>
                         </div>
                         <div class="card-body ml-3 mr-3">
                             <div class="row" >
-                                
                                 <div class="form-group col-md-6 ">
                                     <label for="work_name_id">Work Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-briefcase icon" aria-hidden="true"></i>
                                             <select class="form-control" id="work_name_id" name="work_name_id" style="height: 39px;" onclick="displayDivDemo()">
                                                 <option disabled selected>--Select Work Name--</option>
                                                 @foreach ($work_names as $work_name)
@@ -34,7 +37,8 @@
                                 <div class="form-group col-md-6">
                                     <label for="Plannig_package_name">Package Name</label>
                                     <div class="input-container">
-                                        <i class="fa fa-building-o icon" aria-hidden="true"></i>
+                                        <i class="fa fa-archive icon" aria-hidden="true"></i>
+
                                         <input type="text" class="form-control" name="Plannig_package_name" value="{{old('Plannig_package_name')}}" placeholder="Plannig Package Name">
                                     </div> 
                                     @error('Plannig_package_name')
@@ -87,6 +91,9 @@
             </div>
         </div>
     </div>
+@endif   
+@if( in_array('list_package', $user_permisions ) )
+
     <div class="content">
         <div class="container-fluid">
             <div class="row">
@@ -104,7 +111,9 @@
                                             <th>Work Name</th>
                                             <th>Package Name</th>
                                             <th>Rate</th>
-                                            <th>Action</th>
+                                            @if( in_array('edit_package', $user_permisions ) || in_array('delete_package', $user_permisions ) )
+                                                <th>Action</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -139,13 +148,18 @@
                                                 @endif
                                                 </td> 
                                                 <td class="td-actions row">
+                                                @if( in_array('edit_package', $user_permisions )  )
                                                     <a  href="{{route('package.edit',[$package->id])}}" type="button" class="btn btn-success btn-edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                @endif
+                                                @if( in_array('delete_package', $user_permisions ) )
                                                     <form  method="post" action="{{route('package.destroy',[$package->id])}}"> 
                                                         @csrf
                                                         @method('delete')
                                                         <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger btn-delete"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
                                                     </form> 
+                                                @endif    
                                                 </td>
+
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -157,7 +171,8 @@
             </div>
         </div>
     </div>
-</div>
+@endif   
+
 @endsection
 @push('scripts')
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>

@@ -14,8 +14,13 @@ class MeasurementController extends Controller
      */
     public function index()
     {
-        $measurement = Measurement::where('deleted_date', NULL)->get();
-        return view('pages.Measurement.measurement')->with('measurement', $measurement);
+        // $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        // if( in_array('create_measurement', $user_permissions ) ){
+            $measurement = Measurement::where('deleted_date', NULL)->get();
+            return view('pages.Measurement.measurement')->with('measurement', $measurement);
+        // }else{
+        //     return redirect()->route('home');
+        // }    
    
     }
  
@@ -71,9 +76,14 @@ class MeasurementController extends Controller
      */
     public function edit($id)
     {
-        $measurement = Measurement::where('deleted_date', NULL)->get();
-        $measurement = Measurement::findOrFail($id);  
-        return view('pages.Measurement.measurement_edit')->with('measurement', $measurement);  
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('edit_measurement', $user_permissions ) ){
+            $measurement = Measurement::where('deleted_date', NULL)->get();
+            $measurement = Measurement::findOrFail($id);  
+            return view('pages.Measurement.measurement_edit')->with('measurement', $measurement);  
+        }else{
+            return redirect()->route('home');
+        }    
     }
 
     /**
@@ -109,12 +119,17 @@ class MeasurementController extends Controller
      */
     public function destroy($id)
     {
-        $status = Measurement::destroy($id);
-        if($status){
-            request()->session()->flash('success', 'Measurement Name Deleted Successfully !!');
+        $user_permissions = (new SlugController)->get_user_permissions(Auth()->user()->id);
+        if( in_array('delete_measurement', $user_permissions ) ){
+            $status = Measurement::destroy($id);
+            if($status){
+                request()->session()->flash('success', 'Measurement Name Deleted Successfully !!');
+            }else{
+                request()->session()->flash('error', 'Measurement Name Not Deleted !!');
+            }
+            return redirect()->back();
         }else{
-            request()->session()->flash('error', 'Measurement Name Not Deleted !!');
-        }
-        return redirect()->back();
+            return redirect()->route('home');
+        }    
     }
 }
